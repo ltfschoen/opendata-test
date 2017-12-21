@@ -8,16 +8,17 @@ require 'uri'
 require 'json'
 require 'openssl'
 
-# Transport for NSW (TfNSW) Open Data API
-BASE_URL = 'https://api.transport.nsw.gov.au/v1'
-# Traffic Volume Counts API
-API_ENDPOINT = '/roads/spatial'
-PARAM_FORMAT = 'geojson'
-PARAM_TABLE = 'road_traffic_counts_station_reference'
-PARAM_LIMIT = '50'
-QUERY_STRING_PARAMS = "?format=#{PARAM_FORMAT}&q=select%20*%20from%20#{PARAM_TABLE}%20limit%20#{PARAM_LIMIT}%20"
+require_relative '../config/config'
+Object.instance_eval { 
+  include DSL::Constants
+}
 
-uri = URI.parse(BASE_URL + API_ENDPOINT + QUERY_STRING_PARAMS)
+# Traffic Volume Counts API
+uri = URI.parse(
+  OpenDataAPI::BASE_URL + OpenDataAPI::TrafficVolumeCountsAPI::API_ENDPOINT + 
+  OpenDataAPI::TrafficVolumeCountsAPI.query_string_params('geojson', 'road_traffic_counts_station_reference', '50')
+)
+
 puts "URI: #{uri.to_s}"
 puts uri.host
 puts uri.port
@@ -30,7 +31,7 @@ request = Net::HTTP::Get.new(uri)
 request.initialize_http_header({
   "Accept" => "application/json",
   "Content-Type" => "application/json",
-  "Authorization" => "apikey #{ENV['OPENDATA_TRAFFIC_VOLUME_COUNTS_API_KEY']}",
+  "Authorization" => "apikey #{OpenDataAPI::TrafficVolumeCountsAPI::API_KEY}",
   "User-Agent" => "ruby/net::http"
 })
 

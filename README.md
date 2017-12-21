@@ -4,13 +4,21 @@
   * Ruby application to experiment with the [Transport for NSW Open Data API](https://opendata.transport.nsw.gov.au).
 
 * Quick Start
+  * Obtain and Setup API Keys from OpenData API
+    * Register with OpenData API
+    * Create App
+    * Select API
+    * Obtain associated API Keys
+    * Add API Keys to .env file (i.e. `OPENDATA_TRAFFIC_VOLUME_COUNTS_API_KEY=<INSERT_API_KEY>`)
+    * Add or Update a module in ./config/config.rb with the API configuration
+    * Import the API configuration module into implementation code (i.e. ./src/main.rb) 
   * Install dependencies
     ```
     bundle install
     ```
   * Run
     ```
-    bundle exec ruby main.rb
+    bundle exec ruby ./src/main.rb
     ```
 
 * Setup Log
@@ -38,7 +46,7 @@
       * Click the button "Try it out!"
 
   * Create Application
-    * Create Ruby file main.rb
+    * Create Ruby file ./src/main.rb
     * Create .env file
     * Setup Gemfile 
       * Go to http://bundler.io/
@@ -49,4 +57,4 @@
       ```
       curl -X GET --header 'Accept: application/json' --header 'Authorization: apikey <INSERT_API_KEY>' 'https://api.transport.nsw.gov.au/v1/roads/spatial?format=geojson&q=select%20*%20from%20road_traffic_counts_station_reference%20limit%2050%20'
       ```
-    * Run with `bundle exec ruby main.rb`
+    * Run with `bundle exec ruby ./src/main.rb`
