@@ -1,7 +1,9 @@
 # OpenData API
 
 * About:
-  * Ruby application to experiment with the [Transport for NSW Open Data API](https://opendata.transport.nsw.gov.au).
+  * Ruby application with HTTP(S) Session to re-use across multiple requests that are configured to use [Transport for NSW Open Data APIs](https://opendata.transport.nsw.gov.au). Currently configured to use:
+    * Traffic Volume Counts API
+    * Trip Planner API
 
 * Quick Start
   * Obtain and Setup API Keys from OpenData API
@@ -9,7 +11,7 @@
     * Create App
     * Select API
     * Obtain associated API Keys
-    * Add API Keys to .env file (i.e. `OPENDATA_TRAFFIC_VOLUME_COUNTS_API_KEY=<INSERT_API_KEY>`)
+    * Add API Keys to .env file (i.e. `OPENDATA_API_KEY=<INSERT_API_KEY>`)
     * Add or Update a module in ./config/config.rb with the API configuration
     * Import the API configuration module into implementation code (i.e. ./src/main.rb) 
   * Install dependencies
