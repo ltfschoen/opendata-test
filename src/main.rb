@@ -36,21 +36,44 @@ request.initialize_http_header({
 })
 
 puts "Request Headers: #{request.to_hash.inspect}"
-Net::HTTP.start(uri.hostname, uri.port,
-  :use_ssl => uri.scheme == 'https') do |http|
+
+def fetch(http, request, limit = 10)
+  raise "Too many HTTP redirects" if limit == 0
+
   response = http.request(request) # Net::HTTPResponse object
+  
   case response
   when Net::HTTPSuccess then
-    puts """Response:\n\t
-    Code: #{response.code}\n\t
-    Message: #{response.message}\n\t
-    Class: #{response.class.name}\n\t
-    Headers: \n #{JSON.pretty_generate(response.to_hash)}
-    Body: \n #{JSON.pretty_generate(JSON.parse(response.body))}
-    """
+    if response['content-type'] =~ /json/i
+      puts """Response:\n\t
+      Code: #{response.code}\n\t
+      Message: #{response.message}\n\t
+      Class: #{response.class.name}\n\t
+      Headers: \n #{JSON.pretty_generate(response.to_hash)}
+      Body: \n #{JSON.pretty_generate(JSON.parse(response.body))}
+      """ 
+    else
+      http.finish
+      raise Exception.new("Only JSON response supported")
+    end
   when Net::HTTPRedirection then
-    puts Net::HTTP.get(URI.parse(response['location']))
+    location = response['location']
+    puts Net::HTTP.get(URI.parse(location))
+    warn "Redirected to #{location}"
+    request = Net::HTTP::Get.new(location)
+    fetch(http, request, limit - 1)
   else
     puts response.inspect
   end
+end
+
+begin
+  # Start HTTP Session
+  Net::HTTP.start(uri.hostname, uri.port,
+    :use_ssl => uri.scheme == 'https') do |http|
+    puts http.use_ssl? ? "HTTPS Session" : "HTTP Session"
+    fetch(http, request, OpenDataAPI::REQUEST_LIMIT)
+  end
+rescue Exception => e
+  raise "Exception opening TCP connection: #{e}"
 end

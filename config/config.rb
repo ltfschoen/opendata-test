@@ -3,6 +3,7 @@ module DSL
     module OpenDataAPI
       # Transport for NSW (TfNSW) Open Data API
       BASE_URL = 'https://api.transport.nsw.gov.au/v1'
+      REQUEST_LIMIT = 3
       module TrafficVolumeCountsAPI
         # Traffic Volume Counts API
         API_ENDPOINT = '/roads/spatial'
